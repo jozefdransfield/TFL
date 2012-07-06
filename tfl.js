@@ -3,23 +3,39 @@ var http = require("http");
 var b_ = require("boneidle");
 var url = require("url");
 
-var raw = b_.stream(fs.ReadStream("instant_V1", {encoding:"utf8"})).flatMap(asLine).filter(isMyBusStop);
-raw.map(asObject).realise(function(data) {
-       	var sorted = data.sort(timeOrder);
-	for ( i in sorted ) {
-		console.log(sorted[i].bus +" in "+ printTime(sorted[i].time));
-	}
-});
+module.exports = TFLBusService;
 
+function TFLBusService() {
+	var self = this;
+	this.parse = function(stream, callback) {
+		b_.stream(stream).flatMap(asLine).filter(emptyLine).map(asObject).realise(function(data) {
+			self.data = data;
+			callback();
+		});
+	}
+
+	this.findByBusStop = function(busStop, callback) {
+		b_(self.data).filter(matchesBusStop(busStop)).realise(function(data) {
+			callback(data);
+		});
+	}
+}
 
 function asObject(data) {
-	//[1,"Ealing Town Hall","E8",1341496662000]
-	var o = eval(data);
-	var now = new Date();
-	return {
-		bus: o[2],
-		time: diffInMins(now, new Date(o[3]))
-	}	
+	try {
+		var obj = eval(data);
+		var now = new Date();
+		return {
+			stop: obj[1],
+			bus: obj[2],
+			time: diffInMins(now, new Date(obj[3]))
+		};
+	} catch (e) {
+		return {
+			bus: "poop",
+			time: 0
+		}
+	}
 }
 
 function diffInMins(now, date) {
@@ -32,8 +48,10 @@ function asLine(data) {
 	return b_(data.split("\n"));
 }
 
-function isMyBusStop(data) {
-	return data.indexOf("Ealing Town Hall") != -1;
+function matchesBusStop(busStop) {
+	return function(data) {
+		return data.stop === busStop;
+	}
 }
 
 function timeOrder(a, b) {
@@ -46,4 +64,8 @@ function printTime(time) {
 	} else {
 		return Math.round(time);
 	}
+}
+
+function emptyLine(data) {
+	return (data && data.length > 0);
 }
