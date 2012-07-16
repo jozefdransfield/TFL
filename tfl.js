@@ -16,7 +16,9 @@ function TFLBusService() {
 
 	this.findByBusStop = function(busStop, callback) {
 		b_(self.data).filter(matchesBusStop(busStop)).realise(function(data) {
-			callback(data);
+			callback(data.sort(function(a, b) {
+                return a.time - b.time;
+            }));
 		});
 	}
 }

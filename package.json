@@ -1,0 +1,23 @@
+{
+  "name": "TFL",
+  "description": "TFL",
+  "homepage": "https://github.com/jozefdransfield/TFL",
+  "author": "Jozef Dransfield <Jozef.Dransfield@me.com>",
+  "version": "0.0.1-2",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:jozefdransfield/TFL.git"
+  },
+  "main": "./app.js",
+  "dependencies": {
+    "express": ">=2.5.9",
+    "boneidle": ">=0.1.2"
+  },
+  "subdomain": "jozefdransfield.TFL",
+  "scripts": {
+    "start": "app.js"
+  },
+  "engines": {
+    "node": "0.6.x"
+  }
+}
