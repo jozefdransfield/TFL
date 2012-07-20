@@ -1,0 +1,265 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Webkit CSS Transformers Top Trumps</title>
+<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+<style>
+body, div, h1, h2, h3, h4, h5, h6, p, ul, ol, li, dl, dt, dd, img, form, fieldset, blockquote {
+	margin: 0; padding: 0; border: 0;
+}
+
+body {
+	background: white;
+	font-family: Helvetica, Arial, Sans-Serif;
+}
+
+#countdown {
+	
+}
+
+.wrapper {
+	margin: 50px auto;
+	text-align: center;
+}
+
+.face {
+	display: inline-block;
+	width: 72px; height: 58px;
+	-webkit-perspective: 150;
+}
+
+.face.minutes.tens {
+	margin-right: 5px;
+}
+
+.face.minutes.units {
+	margin-right: 30px;
+}
+
+.face.seconds.tens {
+	margin-right: 5px;
+}
+
+.card {
+	width: 100%; height: 100%;
+	background: url("faces.png");
+	-webkit-transform-style: preserve-3d;
+	position: absolute;
+	-webkit-transform-origin: center 60px;
+	width: 100%; height: 100%;
+	color: white;
+	font-size: 150px;
+	background-color: #a3a3a3;
+	text-align: center;
+	overflow: hidden;
+	position: absolute;
+
+	-webkit-animation-iteration-count: 1;
+	-webkit-animation-direction: normal;
+	-webkit-animation-play-state: running;
+	-webkit-animation-fill-mode: forwards;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+	border-radius: 3px;
+	background-position-y: 5px;
+}
+
+.no9 {
+	background-position-x: -6px;
+}
+
+.no8 {
+	background-position-x: -158px;
+}
+
+.no7 {
+	background-position-x: -311px;
+}
+
+.no6 {
+	background-position-x: -461px;
+}
+
+.no5 {
+	background-position-x: -618px;
+}
+
+.no4 {
+	background-position-x: -767px;
+}
+
+.no3 {
+	background-position-x: -919px;
+}
+
+.no2 {
+	background-position-x: -1071px;
+}
+
+.no1 {
+	background-position-x: -1223px;
+}
+
+.no0 {
+	background-position-x: -1374px;
+}
+
+@-webkit-keyframes flipDown {
+	0% {
+		-webkit-transform : rotateX(0deg);
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+	}
+	25% {
+		-webkit-transform : rotateX(-45deg);
+		-webkit-animation-timing-function: linear;
+	}
+	49% {
+		background-position-y: 7px;
+	}
+	50% {
+		background-position-y: -92px;
+		-webkit-transform : rotateX(-90deg);
+		box-shadow: none;
+		-webkit-animation-timing-function: linear;
+		-webkit-animation-timing-function: ease-in;
+	}
+	75% {
+		background-position-y: -92px;
+		-webkit-transform : rotateX(-135deg);
+		-webkit-animation-timing-function: linear;	
+	}
+	100% {
+		background-position-y: -92px;
+		-webkit-transform : rotateX(-180deg);
+		box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+		-webkit-animation-timing-function: ease-in;
+	
+	}
+}
+	
+
+</style>
+
+<script>
+	function countDown() {
+		var target = new Date(Date.now() + ((274)*1000));
+		console.log(target);
+
+		$("#countdown").countdown(target);
+	}
+
+
+	(function( $ ){
+		$.fn.countdown = function(date) {
+			var minutesTens = $(this.find(".face.minutes.tens"));
+    		var minutesUnits = $(this.find(".face.minutes.units"));
+
+    		var secondsTens = $(this.find(".face.seconds.tens"));
+    		var secondsUnits = $(this.find(".face.seconds.units"));
+			
+    		// flipTo(minutesTens, 3);
+    		// flipTo(minutesUnits, 7);
+    		// flipTo(secondsTens, 1);
+    		// flipTo(secondsUnits, 8);
+
+  			window.setInterval(function() {
+  				var now = new Date();
+  				var diff = date.getTime() - now.getTime();
+
+	    		var minutesValue = Math.floor(diff/1000/60);
+	    		var secondsValue = Math.floor(diff/1000%60);
+
+	    		console.log(minutesValue + ":" + secondsValue)
+
+				flipTo(minutesTens, Math.floor(minutesValue/10));
+				flipTo(minutesUnits, minutesValue%10);
+
+				flipTo(secondsTens, Math.floor(secondsValue/10));
+				flipTo(secondsUnits, secondsValue%10);
+  			}, 1000);
+  		};
+	})( jQuery );
+
+	function flipTo(node, value) {
+		for (var i=9; i > value; i--) { 
+			var zIndex; 
+			if ( value < i) {
+				zIndex = 9-i;
+			} else {
+				zIndex = i;
+			}
+			window.setTimeout(flipDown(node, i, zIndex), i*100);		
+		}
+	}
+	function flipDown(node, i, zIndex) {
+		return function() {
+			node.find(".no"+i).css("zIndex", zIndex);
+			node.find(".no"+i).css("webkitAnimation", "flipDown 0.5s forwards");	
+		}
+	}
+
+	window.onload = countDown;
+</script>
+
+</head>
+
+<body>
+
+	<div id="countdown">
+		<h1> The next E8 bus </br>will leave from Brentford County Court in:</h1>
+		<div class="wrapper">
+			<div class="face minutes tens">
+				<div class="card no0"></div>
+				<div class="card no1"></div>
+				<div class="card no2"></div>
+				<div class="card no3"></div>
+				<div class="card no4"></div>
+				<div class="card no5"></div>
+				<div class="card no6"></div>
+				<div class="card no7"></div>
+				<div class="card no8"></div>
+				<div class="card no9"></div>
+			</div>
+			<div class="face minutes units">
+				<div class="card no0"></div>
+				<div class="card no1"></div>
+				<div class="card no2"></div>
+				<div class="card no3"></div>
+				<div class="card no4"></div>
+				<div class="card no5"></div>
+				<div class="card no6"></div>
+				<div class="card no7"></div>
+				<div class="card no8"></div>
+				<div class="card no9"></div>
+			</div>
+
+			<div class="face seconds tens">
+				<div class="card no0"></div>
+				<div class="card no1"></div>
+				<div class="card no2"></div>
+				<div class="card no3"></div>
+				<div class="card no4"></div>
+				<div class="card no5"></div>
+				<div class="card no6"></div>
+				<div class="card no7"></div>
+				<div class="card no8"></div>
+				<div class="card no9"></div>
+			</div>
+			<div class="face seconds units">
+				<div class="card no0"></div>
+				<div class="card no1"></div>
+				<div class="card no2"></div>
+				<div class="card no3"></div>
+				<div class="card no4"></div>
+				<div class="card no5"></div>
+				<div class="card no6"></div>
+				<div class="card no7"></div>
+				<div class="card no8"></div>
+				<div class="card no9"></div>
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>
